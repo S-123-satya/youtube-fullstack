@@ -6,7 +6,7 @@ class ApiError extends Error{
      * @param {string} message 
      * @param {string} stack 
      */
-    constructor(statusCode=404,errors=[],message="Something went wrong",stack=""){
+    constructor(statusCode=404,message="Something went wrong",errors=[],stack=""){
         super(message);
         this.statusCode=statusCode;
         this.errors=errors;
@@ -18,3 +18,4 @@ class ApiError extends Error{
         }
         }
 }
+export {ApiError}
