@@ -26,7 +26,7 @@ const userSchema = new Schema(
     },
     picUrl: {
       type: String,
-      required: [true, "PicUrl is required"],
+      // required: [true, "PicUrl is required"],
       default:"",
     },
     coverImage: {
@@ -73,7 +73,6 @@ userSchema.methods.generateAccessToken = function () {
       _id: this._id,
       email: this.email,
       username: this.username,
-      role: this.role,
     },
     process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }

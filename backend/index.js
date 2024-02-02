@@ -1,5 +1,5 @@
 import app from './app.js'
-import mongodb from './utils/db.js';
+import mongodb from './db/index.js';
 
 const PORT= process.env.PORT || 3000;
 
