@@ -3,19 +3,7 @@ import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/AsyncHandler.js";
-
-const generateAccessAndRefreshToken=async(userId)=>{
-    try {
-        const user=await User.findById(userId);
-        const accessToken=user.generateAccessToken();
-        const refreshToken=user.generateRefreshToken();
-        user.refreshToken=refreshToken;
-        await user.save({ validateBeforeSave: false });
-        return {accessToken,refreshToken};
-    } catch (error) {
-        throw new ApiError(500,"something went wrong while generating access and refresh token",error);
-    }
-}
+import { generateAccessAndRefreshToken } from "../utils/helpers.js";
 
 const userRegister=asyncHandler(async(req,res,next)=>{
     const {username,email,password} =req.body;
