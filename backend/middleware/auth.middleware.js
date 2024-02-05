@@ -2,7 +2,6 @@ import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/AsyncHandler.js";
 import jwt from "jsonwebtoken";
-import { generateAccessAndRefreshToken } from "../utils/helpers.js";
 
 export const verifyJWT = asyncHandler(async (req, res, next) => {
   let user=null;
@@ -14,32 +13,13 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
   }
   const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
   if (!decodedToken) {
-    // refresh the access token with refreshToken
-    const reqRefreshToken =
-      req.cookies?.refreshToken ||
-      req.header("refreshToken")?.replace("Bearer ", "");
-    if (!reqRefreshToken) {
-      throw new ApiError(401, "Unautorised access please login again");
-    }
-    const decodedrefreshToken = jwt.verify(
-      reqRefreshToken,
-      process.env.ACCESS_TOKEN_SECRET
-    );
-    if (!decodedrefreshToken) {
-      throw new ApiError(401, "Token expired, Please login again");
-    }
-    const { refreshToken, accessToken } = generateAccessAndRefreshToken(
-      decodedrefreshToken._id
-    );
-    res.cookie("accessToken", accessToken).cookie("refreshToken", refreshToken);
-     user = await User.findById(decodedrefreshToken._id);
-  if (!user) {
-    throw new ApiError(404, "Unauthorized access User not found");
+    throw new ApiError(401, "Unautorized access, token missing");
   }
-  }
-   user = await User.findById(decodedToken._id);
+   user = await User.findById(decodedToken._id).select(
+    "-password -refreshToken"
+  );
   if (!user) {
-    throw new ApiError(404, "Unauthorized access User not found");
+    throw new ApiError(404, "Unauthorized access User not found or token get expired plesase use refresh token to generate access token again");
   }
   req.user=user;
   next();

@@ -27,7 +27,7 @@ const userSchema = new Schema(
     picUrl: {
       type: String,
       // required: [true, "PicUrl is required"],
-      default:"",
+      default: "",
     },
     coverImage: {
       type: String,
@@ -37,12 +37,16 @@ const userSchema = new Schema(
     },
     subscriberCount: {
       type: Number,
-      default:0,
+      default: 0,
     },
     channelSubscribeCount: {
       type: Number,
-      default:0,
+      default: 0,
     },
+    watchHistory:[ {
+      type: Schema.Types.ObjectId,
+      ref: "Video",
+    }],
   },
   { timestamps: true }
 );
@@ -59,10 +63,10 @@ userSchema.post("save", async function (user, next) {
   next();
 });
 /**
- * 
+ *
  * @description this is how we add a functionality to a schema for available for future reference
  */
- 
+
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
@@ -88,6 +92,5 @@ userSchema.methods.generateRefreshToken = function () {
     { expiresIn: process.env.REFRESH_TOKEN_EXPIRY }
   );
 };
-
 
 export const User = mongoose.model("User", userSchema);

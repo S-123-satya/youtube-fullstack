@@ -68,9 +68,8 @@ const changeUsername=asyncHandler(async(req,res,next)=>{
     if(existingUser){
         throw new ApiError(402,"username already exist");
     }
-    const updatedUser=await User.findByIdAndUpdate(req.user._id,{$set:{
-        username:username
-    }})
+    req.user.username=username.trim().lowercase();
+    const updatedUser=await req.user.save();
     if(!updatedUser){
         throw new ApiError(500,"something went wrong while updating the username")
     }
